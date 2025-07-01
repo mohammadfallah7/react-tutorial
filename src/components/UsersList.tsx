@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import type { UserModel } from "../types/user.model";
 import { axiosInstance } from "../lib/utils";
+import { Link } from "react-router";
 
 const UsersList = () => {
   const [users, setUsers] = useState<UserModel[]>([]);
@@ -145,13 +146,19 @@ const UsersList = () => {
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>{user.address.city}</td>
-                <td>
+                <td className="space-x-3">
                   <button
                     onClick={() => handleClick(user.id)}
                     className="btn btn-sm btn-error"
                   >
                     delete
                   </button>
+                  <Link
+                    to={`/users/${user.id}`}
+                    className="btn btn-sm btn-secondary"
+                  >
+                    Visit
+                  </Link>
                 </td>
               </tr>
             ))}
