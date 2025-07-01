@@ -6,6 +6,7 @@ const UsersList = () => {
   const [users, setUsers] = useState<UserModel[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isDeletingUser, setIsDeletingUser] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
@@ -23,14 +24,18 @@ const UsersList = () => {
   }, []);
 
   const handleClick = (id: number) => {
-    const initialState = users;
-
-    setUsers(users.filter((user) => id !== user.id));
+    // const initialState = users;
+    setIsDeletingUser(true);
 
     axios
       .delete("https://jsonplaceholder.typicode.com/users/" + id)
+      .then(() => {
+        setUsers(users.filter((user) => id !== user.id));
+        setIsDeletingUser(false);
+      })
       .catch(() => {
-        setUsers(initialState);
+        setIsDeletingUser(false);
+        // setUsers(initialState);
       });
   };
 
@@ -69,6 +74,7 @@ const UsersList = () => {
               <td>{user.address.city}</td>
               <td>
                 <button
+                  disabled={isDeletingUser}
                   onClick={() => handleClick(user.id)}
                   className="btn btn-sm btn-error"
                 >
