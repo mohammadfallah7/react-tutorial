@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import type { UserModel } from "../types/user.model";
+import { axiosInstance } from "../lib/utils";
 
 const UsersList = () => {
   const [users, setUsers] = useState<UserModel[]>([]);
@@ -10,8 +10,8 @@ const UsersList = () => {
   useEffect(() => {
     setIsLoading(true);
 
-    axios
-      .get("https://jsonplaceholder.typicode.com/users")
+    axiosInstance
+      .get("/users")
       .then((response) => {
         setUsers(response.data);
         setIsLoading(false);
@@ -27,11 +27,9 @@ const UsersList = () => {
 
     setUsers(users.filter((user) => id !== user.id));
 
-    axios
-      .delete("https://jsonplaceholder.typicode.com/users/" + id)
-      .catch(() => {
-        setUsers(initialState);
-      });
+    axiosInstance.delete("/users/" + id).catch(() => {
+      setUsers(initialState);
+    });
   };
 
   if (isLoading) {
