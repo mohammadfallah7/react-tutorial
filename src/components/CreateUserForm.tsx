@@ -1,24 +1,15 @@
 import { useState, type FormEvent } from "react";
-import { axiosInstance } from "../lib/utils";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { CreateUserPayload } from "../types/user.model";
+import useCreateUser from "../hooks/use-create-user";
 
 const CreateUserForm = () => {
-  const queryClient = useQueryClient();
-  const { mutate, isPending } = useMutation({
-    mutationFn: (payload: CreateUserPayload) =>
-      axiosInstance.post("/users", payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
-    },
-  });
+  const { mutate, isPending } = useCreateUser();
 
   const [userFormData, setUserFormData] = useState<CreateUserPayload>({
     name: "",
     email: "",
     address: { city: "" },
   });
-  // const [isCreatingUser, setIsCreatingUser] = useState(false);
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -30,21 +21,6 @@ const CreateUserForm = () => {
 
     if (name && email && city) {
       mutate(userFormData);
-
-      // setIsCreatingUser(true);
-      // axiosInstance
-      //   .post("/users", userFormData)
-      //   .then(() => {
-      //     setIsCreatingUser(false);
-      //     setUserFormData({
-      //       name: "",
-      //       email: "",
-      //       address: { city: "" },
-      //     });
-      //   })
-      //   .catch(() => {
-      //     setIsCreatingUser(false);
-      //   });
     } else {
       console.log("Fields are required!");
     }
