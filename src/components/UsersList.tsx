@@ -4,7 +4,7 @@ import { Link } from "react-router";
 import useUsers from "../hooks/use-users";
 
 const UsersList = () => {
-  const { users, error, isLoading, setUsers } = useUsers();
+  const { data: users, isLoading, error } = useUsers();
   const [userFormData, setUserFormData] = useState({
     name: "",
     email: "",
@@ -13,13 +13,7 @@ const UsersList = () => {
   const [isCreatingUser, setIsCreatingUser] = useState(false);
 
   const handleClick = (id: number) => {
-    const initialState = users;
-
-    setUsers(users.filter((user) => id !== user.id));
-
-    axiosInstance.delete("/users/" + id).catch(() => {
-      setUsers(initialState);
-    });
+    axiosInstance.delete("/users/" + id).catch(() => {});
   };
 
   const handleSubmit = (event: FormEvent) => {
@@ -35,8 +29,7 @@ const UsersList = () => {
 
       axiosInstance
         .post("/users", userFormData)
-        .then((res) => {
-          setUsers([res.data, ...users]);
+        .then(() => {
           setIsCreatingUser(false);
           setUserFormData({
             name: "",
@@ -63,7 +56,7 @@ const UsersList = () => {
   if (error) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <p className="text-error">{error}</p>
+        <p className="text-error">{error.message}</p>
       </div>
     );
   }
@@ -124,7 +117,7 @@ const UsersList = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
+            {users?.map((user) => (
               <tr key={user.id}>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
