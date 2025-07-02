@@ -1,14 +1,7 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { axiosInstance } from "../lib/utils";
+import useDeleteUser from "../hooks/use-delete-user";
 
 const DeleteUserButton = ({ id }: { id: number }) => {
-  const queryClient = useQueryClient();
-  const { mutate, isPending } = useMutation({
-    mutationFn: (id: number) => axiosInstance.delete(`/users/${id}`),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
-    },
-  });
+  const { mutate, isPending } = useDeleteUser();
 
   const handleClick = () => {
     mutate(id);
