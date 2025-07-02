@@ -1,13 +1,9 @@
-import { axiosInstance } from "../lib/utils";
 import { Link } from "react-router";
 import useUsers from "../hooks/use-users";
+import DeleteUserButton from "./DeleteUserButton";
 
 const UsersList = () => {
   const { data: users, isLoading, error } = useUsers();
-
-  const handleClick = (id: number) => {
-    axiosInstance.delete("/users/" + id).catch(() => {});
-  };
 
   if (isLoading) {
     return (
@@ -43,12 +39,7 @@ const UsersList = () => {
               <td>{user.email}</td>
               <td>{user.address.city}</td>
               <td className="space-x-3">
-                <button
-                  onClick={() => handleClick(user.id)}
-                  className="btn btn-sm btn-error"
-                >
-                  delete
-                </button>
+                <DeleteUserButton id={user.id} />
                 <Link
                   to={`/users/${user.id}`}
                   className="btn btn-sm btn-secondary"

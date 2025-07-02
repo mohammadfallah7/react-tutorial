@@ -1,24 +1,17 @@
-import axios from "axios";
-import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { axiosInstance } from "../lib/utils";
 
-const DeleteUserButton = ({
-  id,
-  onDelete,
-}: {
-  id: number;
-  onDelete: () => void;
-}) => {
-  const [isDeletingUser, setIsDeletingUser] = useState(false);
+const DeleteUserButton = ({ id }: { id: number }) => {
+  const queryClient = useQueryClient();
+  const { mutate, isPending } = useMutation({
+    mutationFn: (id: number) => axiosInstance.delete(`/users/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+  });
 
   const handleClick = () => {
-    setIsDeletingUser(true);
-
-    axios
-      .delete("https://jsonplaceholder.typicode.com/users/" + id)
-      .then(() => {
-        onDelete();
-        setIsDeletingUser(false);
-      });
+    mutate(id);
   };
 
   return (
@@ -26,9 +19,9 @@ const DeleteUserButton = ({
       <button
         onClick={handleClick}
         className="btn btn-sm btn-error"
-        disabled={isDeletingUser}
+        disabled={isPending}
       >
-        {isDeletingUser ? "Deleting..." : "Delete"}
+        {isPending ? "Deleting..." : "Delete"}
       </button>
     </div>
   );
