@@ -28,6 +28,7 @@ const useUsers = () => {
     queryKey: ["users"],
     queryFn: () =>
       axiosInstance.get<UserModel[]>("/users").then((res) => res.data),
+    staleTime: 5 * 60 * 1000,
   });
 };
 

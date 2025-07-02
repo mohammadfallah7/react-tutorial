@@ -5,7 +5,7 @@ import useUser from "../hooks/use-user";
 
 const UserDetailPage = () => {
   const { id } = useParams();
-  const { user, isLoading, error } = useUser(id!);
+  const { data: user, isLoading, error } = useUser(id!);
   const navigate = useNavigate();
   const [userFormData, setUserFormData] = useState({
     name: user?.name,
@@ -45,7 +45,7 @@ const UserDetailPage = () => {
   if (error) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <p className="text-error">{error}</p>
+        <p className="text-error">{error.message}</p>
       </div>
     );
   }
