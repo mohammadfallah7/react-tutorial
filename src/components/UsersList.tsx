@@ -1,33 +1,16 @@
-import { useEffect, useState, type FormEvent } from "react";
-import type { UserModel } from "../types/user.model";
+import { useState, type FormEvent } from "react";
 import { axiosInstance } from "../lib/utils";
 import { Link } from "react-router";
+import useUsers from "../hooks/use-users";
 
 const UsersList = () => {
-  const [users, setUsers] = useState<UserModel[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const { users, error, isLoading, setUsers } = useUsers();
   const [userFormData, setUserFormData] = useState({
     name: "",
     email: "",
     address: { city: "" },
   });
   const [isCreatingUser, setIsCreatingUser] = useState(false);
-
-  useEffect(() => {
-    setIsLoading(true);
-
-    axiosInstance
-      .get("/users")
-      .then((response) => {
-        setUsers(response.data);
-        setIsLoading(false);
-      })
-      .catch((error: Error) => {
-        setError(error.message);
-        setIsLoading(false);
-      });
-  }, []);
 
   const handleClick = (id: number) => {
     const initialState = users;

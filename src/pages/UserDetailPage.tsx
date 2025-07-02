@@ -1,13 +1,11 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { useNavigate, useParams } from "react-router";
-import type { UserModel } from "../types/user.model";
 import { axiosInstance } from "../lib/utils";
+import useUser from "../hooks/use-user";
 
 const UserDetailPage = () => {
   const { id } = useParams();
-  const [user, setUser] = useState<UserModel>();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const { user, isLoading, error } = useUser(id!);
   const navigate = useNavigate();
   const [userFormData, setUserFormData] = useState({
     name: user?.name,
@@ -35,21 +33,6 @@ const UserDetailPage = () => {
       console.log("Fields are required!");
     }
   };
-
-  useEffect(() => {
-    setIsLoading(true);
-
-    axiosInstance
-      .get(`/users/${id}`)
-      .then((res) => {
-        setUser(res.data);
-        setIsLoading(false);
-      })
-      .catch((error: Error) => {
-        setError(error.message);
-        setIsLoading(false);
-      });
-  }, [id]);
 
   if (isLoading) {
     return (
